@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Sameen Nauman</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">SN</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="experience.html">Experience</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+    <section class="section">
+      <div class="container">
+
+        <div class="section-header fade-up">
+          <p class="section-label">Get in Touch</p>
+          <h1 class="section-title">Contact</h1>
+        </div>
+
+        <div class="contact-grid">
+
+          <div class="fade-up delay-1">
+            <p class="contact-lead">
+              If you're hiring a product manager who obsesses over user needs, ships features end-to-end, and brings both rigour and curiosity to the table — I'd love to hear from you.
+            </p>
+            <p style="font-size: 0.85rem; color: #555; margin-bottom: 2.5rem; font-family: var(--font-mono); letter-spacing: 0.05em;">
+              Please include context about the role, team, and what you're building. The more specific, the better the conversation.
+            </p>
+
+            <div class="contact-links">
+              <a href="mailto:sameennauman158@gmail.com" class="contact-link-item">
+                <div>
+                  <span class="contact-link-label">Email</span>
+                  <span class="contact-link-value">sameennauman158@gmail.com</span>
+                </div>
+                <span class="contact-arrow">↗</span>
+              </a>
+              <a href="https://www.linkedin.com/in/sameen-nauman-7323a51b3/" target="_blank" class="contact-link-item">
+                <div>
+                  <span class="contact-link-label">LinkedIn</span>
+                  <span class="contact-link-value">sameen-nauman-7323a51b3</span>
+                </div>
+                <span class="contact-arrow">↗</span>
+              </a>
+              <div class="contact-link-item" style="cursor: default;">
+                <div>
+                  <span class="contact-link-label">Location</span>
+                  <span class="contact-link-value">Lahore / Islamabad, Pakistan</span>
+                </div>
+                <span class="contact-arrow" style="opacity: 0.3;">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="fade-up delay-2">
+            <p class="section-label" style="margin-bottom: 1.5rem;">Send a Message</p>
+
+            <form
+              action="https://formspree.io/f/your-form-id"
+              method="POST"
+              class="contact-form"
+            >
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="name">Name</label>
+                  <input type="text" id="name" name="name" placeholder="Your name" required />
+                </div>
+                <div class="form-field">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" placeholder="your@email.com" required />
+                </div>
+              </div>
+              <div class="form-field">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" placeholder="What's this about?" />
+              </div>
+              <div class="form-field">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="6" placeholder="Tell me about the role, company, or opportunity..." required></textarea>
+              </div>
+              <div class="form-submit">
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1px;">
+                  Send Message ↗
+                </button>
+              </div>
+            </form>
+
+            <p style="font-family: var(--font-mono); font-size: 0.68rem; color: #444; letter-spacing: 0.1em; margin-top: 1.5rem; text-align: center;">
+              To activate the form, sign up at formspree.io and replace "your-form-id" in the code.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <span class="footer-text">© 2025 Sameen Nauman Janjua</span>
+    <span class="footer-text">Lahore, Pakistan</span>
+  </footer>
+
+</body>
+</html>
