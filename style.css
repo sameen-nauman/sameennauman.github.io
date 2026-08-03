@@ -558,6 +558,19 @@ nav {
 }
 
 .feature-link:hover { color: var(--accent); }
+
+.feature-media {
+  width: 100%;
+  display: block;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border2);
+}
+
+.feature-media img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
