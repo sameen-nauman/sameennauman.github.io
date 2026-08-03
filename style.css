@@ -571,6 +571,88 @@ nav {
   height: auto;
   display: block;
 }
+
+/* ── FLAGSHIP / BENTO ── */
+.flagship-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin-bottom: 1px;
+}
+
+.flagship-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 2.75rem 3rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.flagship-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--accent2);
+}
+
+.flagship-card:hover { border-color: var(--border2); }
+
+.flagship-hero-text {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 7vw, 5.5rem);
+  line-height: 0.95;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+  margin-bottom: 0.75rem;
+}
+
+.flagship-hero-text .count-up { display: inline-block; }
+
+.flagship-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.flagship-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  margin-bottom: 0.85rem;
+  line-height: 1.15;
+}
+
+.flagship-desc {
+  font-size: 0.92rem;
+  color: #888;
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+
+.flagship-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.flagship-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--accent2);
+  border: 1px solid var(--border2);
+  padding: 0.3rem 0.65rem;
+}
+
+@media (max-width: 768px) {
+  .flagship-grid { grid-template-columns: 1fr; }
+}
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -143,7 +143,57 @@
             <h2 class="section-title" style="font-size: 2.5rem;">Features Shipped &amp; In Flight</h2>
           </div>
 
-          <div class="feature-grid">
+          <!-- Flagship: the two biggest-scope initiatives -->
+          <div class="flagship-grid">
+
+            <div class="flagship-card">
+              <div class="flagship-eyebrow">Cross-Tenant Data Standardization · dubizzle MENA</div>
+              <div class="flagship-hero-text"><span class="count-up" data-target="7">7</span></div>
+              <div class="flagship-title">Vehicle Taxonomy &amp; Listing Sync, Standardized Across MENA</div>
+              <p class="flagship-desc">Drove the vehicle specification mapping and listing-sync alignment across seven country tenants — so filtering, posting, and sync behave identically no matter which market an ad comes from.</p>
+              <div class="flagship-tags">
+                <span class="flagship-tag">Egypt</span>
+                <span class="flagship-tag">Jordan</span>
+                <span class="flagship-tag">Qatar</span>
+                <span class="flagship-tag">Kuwait</span>
+                <span class="flagship-tag">Bahrain</span>
+                <span class="flagship-tag">Oman</span>
+                <span class="flagship-tag">KSA</span>
+              </div>
+            </div>
+
+            <div class="flagship-card">
+              <div class="flagship-eyebrow">Platform-Wide Redesign · dubizzle MENA</div>
+              <div class="flagship-hero-text">ALL<br>REGIONS</div>
+              <div class="flagship-title">MENA-Wide UI Revamp</div>
+              <p class="flagship-desc">Contributed to the dubizzle UI revamp spanning all MENA regions, including a dedicated Egypt facelift pass — LPV/DPV transitions, filter sequencing, sticky sections, and layout consistency between app and web.</p>
+              <div class="flagship-tags">
+                <span class="flagship-tag">App ↔ Web Parity</span>
+                <span class="flagship-tag">LPV / DPV</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="feature-grid" style="margin-top: 1px;">
+
+            <div class="feature-card">
+              <div class="feature-eyebrow">Homepage Campaign · OLX Pakistan</div>
+              <div class="feature-name">FIFA World Cup Homepage Banner</div>
+              <p class="feature-desc">Timed homepage takeover for the World Cup moment, shipped across app and desktop to ride peak seasonal traffic.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-eyebrow">Motors · dubizzle Egypt</div>
+              <div class="feature-name">Enhanced Video Experience</div>
+              <p class="feature-desc">Reworked video discovery on Cars for Sale — more prominent LPV/DPV entry points, filter repositioning, and app/web parity so a listing's video gets seen, not buried.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-eyebrow">Analytics Infrastructure · dubizzle Egypt</div>
+              <div class="feature-name">Campaign Attribution at DB Level</div>
+              <p class="feature-desc">Specced UTM capture at ad-posting time alongside ga_user_id, closing the gap between GA event counts and GULs so marketing can actually attribute campaign performance.</p>
+            </div>
 
             <div class="feature-card">
               <div class="feature-eyebrow">Jobs · dubizzle Egypt</div>
@@ -156,12 +206,9 @@
             </div>
 
             <div class="feature-card">
-              <div class="feature-eyebrow">Motors · dubizzle Egypt</div>
-              <div class="feature-name">Sellable Banner</div>
-              <p class="feature-desc">CMS-driven promotional banner on Cars for Sale with a default filter pre-selected for the promoted make/model.</p>
-              <div class="feature-footer">
-                <a class="feature-link" href="https://www.dubizzle.com.eg/en/vehicles/cars-for-sale/" target="_blank" rel="noopener">View Motors ↗</a>
-              </div>
+              <div class="feature-eyebrow">Properties · dubizzle Egypt</div>
+              <div class="feature-name">Agency Discovery Section</div>
+              <p class="feature-desc">A new journey letting buyers search agencies by purpose, location, property type, and name — spec'd end-to-end with BE/FE data contracts.</p>
             </div>
 
             <div class="feature-card">
@@ -172,36 +219,53 @@
 
             <div class="feature-card">
               <div class="feature-eyebrow">Properties · dubizzle Egypt</div>
-              <div class="feature-name">Agency Discovery Section</div>
-              <p class="feature-desc">A new journey letting buyers search agencies by purpose, location, property type, and name — spec'd end-to-end with BE/FE data contracts.</p>
-            </div>
-
-            <div class="feature-card">
-              <div class="feature-eyebrow">Properties · dubizzle Egypt</div>
               <div class="feature-name">New Projects Landing Page</div>
               <p class="feature-desc">Off-plan project discovery — replicating dubizzle UAE's New Projects vertical for Egypt, with city/type browsing and SEO interlinking.</p>
             </div>
 
             <div class="feature-card">
-              <div class="feature-eyebrow">Cross-Tenant · dubizzle MENA</div>
-              <div class="feature-name">Listing Sync &amp; Vehicle Specs Mapping</div>
-              <p class="feature-desc">Standardised vehicle specification mapping across MENA tenants so listing sync, filtering, and posting stay consistent platform-wide.</p>
-            </div>
-
-            <div class="feature-card">
               <div class="feature-eyebrow">C2C Sell Flow · dubizzle Egypt</div>
-              <div class="feature-name">Pre-Submission Quality Nudge</div>
-              <p class="feature-desc">A/B-tested warning that flags category, brand, or title mismatches before an ad is submitted — shifting rejection detection left of moderation.</p>
-            </div>
-
-            <div class="feature-card">
-              <div class="feature-eyebrow">ProTool Re-engagement · dubizzle Egypt</div>
-              <div class="feature-name">"Sell a Similar Item" Nudge</div>
-              <p class="feature-desc">One-tap pre-filled relist flow from an active ad, designed around net-new-listing rate and click-to-publish conversion as the core success metrics.</p>
+              <div class="feature-name">Growth Nudges: Quality &amp; Re-engagement</div>
+              <p class="feature-desc">A/B-tested pre-submission nudge flagging category/title mismatches to cut rejections, plus a "sell a similar item" re-engagement nudge measured on net-new-listing rate and click-to-publish conversion.</p>
             </div>
 
           </div>
         </div>
+
+        <script>
+        (function () {
+          var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          var els = document.querySelectorAll('.count-up[data-target]');
+          if (!els.length) return;
+          if (prefersReduced) return;
+          var animated = new WeakSet();
+          function animate(el) {
+            if (animated.has(el)) return;
+            animated.add(el);
+            var target = parseInt(el.getAttribute('data-target'), 10) || 0;
+            var start = null;
+            var duration = 900;
+            function step(ts) {
+              if (!start) start = ts;
+              var progress = Math.min((ts - start) / duration, 1);
+              el.textContent = Math.round(progress * target);
+              if (progress < 1) requestAnimationFrame(step);
+              else el.textContent = target;
+            }
+            requestAnimationFrame(step);
+          }
+          if ('IntersectionObserver' in window) {
+            var obs = new IntersectionObserver(function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) animate(entry.target);
+              });
+            }, { threshold: 0.4 });
+            els.forEach(function (el) { obs.observe(el); });
+          } else {
+            els.forEach(animate);
+          }
+        })();
+        </script>
 
         <!-- Leadership & Projects -->
         <div style="margin-top: 5rem;" class="fade-up delay-3">
