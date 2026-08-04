@@ -9,8 +9,8 @@
   --border: #222222;
   --border2: #2e2e2e;
   --text: #f0ede8;
-  --muted: #666;
-  --muted2: #444;
+  --muted: #9a9a9a;
+  --muted2: #6b6b6b;
   --accent: #e8d5b0;
   --accent2: #c9a96e;
   --accent3: #f5efe6;
@@ -161,7 +161,7 @@ nav {
 
 .hero-desc {
   font-size: 1rem;
-  color: #888;
+  color: #a3a3a3;
   line-height: 1.8;
   max-width: 420px;
   margin-bottom: 2.5rem;
@@ -296,7 +296,7 @@ nav {
 
 .about-body {
   font-size: 0.95rem;
-  color: #777;
+  color: #9c9c9c;
   line-height: 1.85;
   margin-bottom: 1.25rem;
 }
@@ -432,7 +432,7 @@ nav {
 
 .exp-bullets li {
   font-size: 0.92rem;
-  color: #777;
+  color: #9c9c9c;
   line-height: 1.7;
   padding-left: 1.25rem;
   position: relative;
@@ -509,7 +509,7 @@ nav {
 
 .feature-desc {
   font-size: 0.85rem;
-  color: #777;
+  color: #9c9c9c;
   line-height: 1.65;
   margin-bottom: 1.25rem;
   flex-grow: 1;
@@ -630,7 +630,7 @@ nav {
 
 .flagship-desc {
   font-size: 0.92rem;
-  color: #888;
+  color: #a3a3a3;
   line-height: 1.75;
   margin-bottom: 1.5rem;
 }
@@ -741,7 +741,7 @@ nav {
 
 .work-teaser-desc {
   font-size: 0.85rem;
-  color: #777;
+  color: #9c9c9c;
   line-height: 1.6;
 }
 
@@ -947,7 +947,7 @@ nav {
 .contact-lead {
   font-size: 1.2rem;
   font-weight: 300;
-  color: #888;
+  color: #a3a3a3;
   line-height: 1.8;
   margin-bottom: 3rem;
 }
