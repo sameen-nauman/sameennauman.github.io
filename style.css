@@ -278,6 +278,214 @@ nav {
   color: var(--text);
 }
 
+/* ── EDITORIAL NUMBERING KICKER ── */
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.kicker-num {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  border: 1px solid var(--border2);
+  padding: 0.2rem 0.5rem;
+  flex-shrink: 0;
+}
+
+.kicker-line {
+  width: 20px;
+  height: 1px;
+  background: var(--accent2);
+  flex-shrink: 0;
+}
+
+.kicker-text {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent2);
+}
+
+/* ── STATS ROW (hairline dividers) ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.stats-row-item {
+  padding: 2.25rem 1.75rem;
+  border-left: 1px solid var(--border);
+}
+
+.stats-row-item:first-child { border-left: none; }
+
+.stats-row-num {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.6rem;
+}
+
+.stats-row-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .stats-row-item { border-left: none; border-top: 1px solid var(--border); }
+  .stats-row-item:first-child { border-top: none; }
+}
+
+/* ── MARQUEE TICKER ── */
+.marquee {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.1rem 0;
+  white-space: nowrap;
+}
+
+.marquee-track {
+  display: inline-flex;
+  animation: marqueeScroll 28s linear infinite;
+}
+
+.marquee-track span {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.marquee-track span::after {
+  content: '·';
+  color: var(--accent2);
+}
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* ── CONTENTS INDEX ── */
+.contents-index {
+  margin-bottom: 3.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.contents-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s;
+}
+
+.contents-item:hover { opacity: 0.65; }
+
+.contents-item-code {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent2);
+  flex-shrink: 0;
+  width: 44px;
+}
+
+.contents-item-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.contents-item-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  flex-grow: 1;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 700px) {
+  .contents-item { flex-wrap: wrap; }
+  .contents-item-desc { text-align: left; width: 100%; }
+}
+
+/* ── VERTICAL TIMELINE ── */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+  border-left: 1px dashed var(--border2);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 2.75rem;
+}
+
+.timeline-item:last-child { padding-bottom: 0; }
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2.4rem;
+  top: 0.35rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+
+.timeline-year {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--accent2);
+  margin-bottom: 0.4rem;
+}
+
+.timeline-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  line-height: 1.2;
+}
+
+.timeline-desc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 480px;
+}
+
 /* ── ABOUT ── */
 .about-grid {
   display: grid;
