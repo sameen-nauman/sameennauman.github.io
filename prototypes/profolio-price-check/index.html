@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Profolio | Add Property — Price Check prototype</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --primary: #249f62;
+    --primary-hover: #43ab73;
+    --primary-active: #16784a;
+    --primary-bg: #e9f7f0;
+    --primary-bg-2: #f0faf5;
+    --text: rgba(0,0,0,0.88);
+    --text-2: rgba(0,0,0,0.65);
+    --text-3: rgba(0,0,0,0.45);
+    --border: #d9d9d9;
+    --split: #f0f0f0;
+    --page: #f5f5f5;
+    --disabled-bg: #f5f5f5;
+    --error: #ff4d4f;
+    --error-bg: #fff2f0;
+    --error-border: #ffccc7;
+    --warn: #faad14;
+    --warn-text: #ad6800;
+    --warn-bg: #fffbe6;
+    --warn-border: #ffe58f;
+    --ink: #0d2133;
+    --radius: 6px;
+    --sidebar: 264px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: Manrope, sans-serif;
+    font-size: 14px; line-height: 1.5714;
+    color: var(--text); background: var(--page);
+    -webkit-font-smoothing: antialiased;
+  }
+  html[dir="rtl"] body { font-family: Cairo, Manrope, sans-serif; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    position: fixed; inset-block: 0; inset-inline-start: 0; width: var(--sidebar);
+    background: #fff; border-inline-end: 1px solid var(--split);
+    display: flex; flex-direction: column; z-index: 20;
+  }
+  .brand {
+    height: 72px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; background: linear-gradient(180deg, #eef8f2 0%, #fff 100%);
+    border-bottom: 1px solid var(--split); font-weight: 700; font-size: 17px; color: var(--ink);
+  }
+  .brand sup { font-size: 8px; font-weight: 600; }
+  .brand svg { color: var(--primary); }
+  .nav { list-style: none; margin: 0; padding: 20px 12px; display: grid; gap: 6px; border-bottom: 1px solid var(--split); }
+  .nav li { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--ink); cursor: default; }
+  .nav li:hover { background: #fafafa; }
+  .nav li .chev { margin-inline-start: auto; }
+  .nav .new { color: #ff4d4f; background: #fff1f0; font-size: 12px; font-weight: 700; padding: 0 6px; border-radius: 4px; }
+  .add-btn {
+    margin: 12px 20px; height: 32px; border: 0; border-radius: 6px; background: var(--primary); color: #fff;
+    font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+  }
+  .sidebar-foot { margin-top: auto; }
+  .tier { margin: 0 16px 12px; border: 1px solid var(--split); border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+  .tier b { background: linear-gradient(90deg, #b8860b, #e6c200); color: #fff; padding: 2px 10px; border-radius: 4px; font-size: 12px; }
+  .lang-row { border-top: 1px solid var(--split); padding: 12px 18px; }
+  .lang-btn { display: inline-flex; gap: 8px; align-items: center; height: 32px; padding: 0 16px; border: 1px solid var(--border); background: #fff; border-radius: 6px; font-weight: 700; cursor: pointer; }
+  .lang-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* ---------- Header ---------- */
+  .topbar {
+    position: fixed; top: 0; inset-inline-start: var(--sidebar); inset-inline-end: 0; height: 72px;
+    background: #fff; display: flex; align-items: center; gap: 14px; padding: 0 24px; z-index: 15;
+    box-shadow: 0 1px 0 var(--split);
+  }
+  .topbar h1 { margin: 0; font-size: 20px; font-weight: 600; color: var(--ink); }
+  .topbar .agency { color: var(--text-3); }
+  .topbar .spacer { flex: 1; }
+  .tool-btn { height: 32px; padding: 0 12px; border: 1px solid var(--border); border-radius: 6px; background: #fff; display: inline-flex; align-items: center; gap: 8px; color: var(--ink); }
+  .avatar { width: 24px; height: 24px; border-radius: 50%; background: #d9d9d9; display: inline-grid; place-items: center; color: #fff; }
+  .badge-dot { position: relative; }
+  .badge-dot::after { content: "1"; position: absolute; top: -8px; inset-inline-end: -8px; background: #ff4d4f; color: #fff; border-radius: 10px; font-size: 10px; min-width: 16px; height: 16px; line-height: 16px; text-align: center; }
+
+  /* ---------- Main card ---------- */
+  main { margin-inline-start: var(--sidebar); padding: 96px 24px 96px; }
+  .card { background: #fff; border-radius: 12px; padding: 48px 24px 56px; max-width: 1128px; margin: 0 auto; }
+  .steps { display: flex; align-items: center; gap: 16px; max-width: 860px; margin: 0 auto 26px; }
+  .step { display: flex; align-items: center; gap: 8px; color: var(--text-3); font-size: 16px; white-space: nowrap; }
+  .step i { font-style: normal; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,0,0,0.06); font-size: 14px; }
+  .step.active { color: var(--ink); }
+  .step.active i { background: var(--primary); color: #fff; }
+  .step-line { flex: 1; height: 1px; background: var(--split); }
+  .form-title { text-align: center; font-size: 20px; font-weight: 700; color: var(--ink); margin: 0 0 30px; }
+  .form { max-width: 733px; margin: 0 auto; }
+  .section-title { font-size: 16px; font-weight: 700; color: var(--ink); margin: 0 0 20px; }
+  .divider { border: 0; border-top: 1px solid var(--split); margin: 40px 0 36px; }
+
+  .field { margin-bottom: 24px; }
+  .field > label { display: block; margin-bottom: 8px; color: var(--text); }
+  .field > label.req::before { content: "*"; color: var(--error); margin-inline-end: 4px; font-family: SimSun, sans-serif; }
+  .control {
+    width: 100%; height: 32px; padding: 4px 11px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: #fff; outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  .control:hover { border-color: var(--primary-hover); }
+  .control:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(36,159,98,0.12); }
+  .control:disabled { background: var(--disabled-bg); color: var(--text-3); cursor: not-allowed; border-color: var(--border); }
+  select.control {
+    appearance: none; -webkit-appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-opacity='.45' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center; padding-inline-end: 32px;
+  }
+  html[dir="rtl"] select.control { background-position: left 12px center; }
+  .field.has-error .control, .field.has-error .affix { border-color: var(--error); }
+  .field-error { color: var(--error); font-size: 14px; margin-top: 4px; display: none; }
+  .field.has-error .field-error { display: block; }
+  .hint { color: var(--text-3); font-size: 12px; margin-top: 4px; }
+  .alert { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--warn-border); background: var(--warn-bg); margin-bottom: 10px; }
+  .alert .ico { color: var(--warn); flex: none; margin-top: 3px; }
+  .ghost-green { margin-top: 8px; height: 32px; padding: 0 16px; border: 0; border-radius: 6px; background: var(--primary-bg); color: var(--primary); cursor: pointer; }
+  .ghost-green:hover { background: #d6f0e2; }
+  .map {
+    height: 190px; border-radius: 8px; margin-top: 12px; position: relative; overflow: hidden;
+    background:
+      linear-gradient(90deg, transparent 49%, #fff 49%, #fff 51%, transparent 51%) 0 0/120px 100%,
+      linear-gradient(0deg, transparent 48%, #fff 48%, #fff 52%, transparent 52%) 0 0/100% 90px,
+      #e8ece9;
+  }
+  .map .pin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -100%); color: #13c2c2; }
+  .map small { position: absolute; bottom: 6px; inset-inline-end: 10px; font-size: 11px; color: #555; }
+
+  /* affix input */
+  .affix { display: flex; align-items: stretch; border: 1px solid var(--border); border-radius: var(--radius); background: #fff; transition: border-color .2s, box-shadow .2s; }
+  .affix:hover { border-color: var(--primary-hover); }
+  .affix:focus-within { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(36,159,98,0.12); }
+  .affix input { flex: 1; min-width: 0; border: 0; outline: none; height: 30px; padding: 4px 11px; background: transparent; font-variant-numeric: tabular-nums; }
+  .affix .suffix { display: flex; align-items: center; padding: 0 11px; background: #fafafa; border-inline-start: 1px solid var(--border); color: var(--text-2); border-start-end-radius: var(--radius); border-end-end-radius: var(--radius); white-space: nowrap; }
+
+  /* ---------- Price band widget ---------- */
+  .pb { margin-top: 10px; border: 1px solid var(--split); border-radius: 10px; padding: 16px 16px 14px; background: #fff; animation: pbIn .25s ease; }
+  @keyframes pbIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .pb[hidden] { display: none; }
+  .pb-head { display: flex; gap: 8px; align-items: flex-start; color: var(--text); margin-bottom: 30px; }
+  .pb-head svg { flex: none; color: var(--primary); margin-top: 3px; }
+  .pb-head b { font-weight: 700; }
+  .pb-src { margin-inline-start: auto; font-size: 11px; color: var(--text-3); white-space: nowrap; padding-top: 2px; }
+  .pb-bar { position: relative; height: 10px; border-radius: 999px; margin: 0 6px; }
+  .pb-zone { position: absolute; top: 0; bottom: 0; }
+  .z-hard { background: #ffccc7; }
+  .z-soft { background: #ffe7ba; }
+  .z-ok { background: linear-gradient(90deg, #b7e4c7, #8bc4a2 50%, #b7e4c7); }
+  .z-high { background: #eceff1; }
+  html[dir="rtl"] .z-ok { background: linear-gradient(270deg, #b7e4c7, #8bc4a2 50%, #b7e4c7); }
+  .pb-bar .z-first { border-start-start-radius: 999px; border-end-start-radius: 999px; }
+  .pb-bar .z-last { border-start-end-radius: 999px; border-end-end-radius: 999px; }
+  .pb-tick { position: absolute; top: -3px; bottom: -3px; width: 2px; background: #fff; transform: translateX(-50%); }
+  html[dir="rtl"] .pb-tick { transform: translateX(50%); }
+  .pb-tick.avg { background: var(--primary-active); width: 2px; top: -4px; bottom: -4px; border-radius: 2px; }
+  .pb-marker { position: absolute; top: 50%; transition: inset-inline-start .35s cubic-bezier(.2,.8,.2,1); }
+  .pb-marker .dot { position: absolute; width: 18px; height: 18px; border-radius: 50%; border: 3px solid #fff; transform: translate(-50%, -50%); box-shadow: 0 1px 4px rgba(0,0,0,.3); background: var(--ink); }
+  html[dir="rtl"] .pb-marker .dot { transform: translate(50%, -50%); }
+  .pb-marker .flag {
+    position: absolute; bottom: 14px; transform: translateX(-50%); white-space: nowrap; background: var(--ink); color: #fff;
+    font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px; font-variant-numeric: tabular-nums;
+  }
+  html[dir="rtl"] .pb-marker .flag { transform: translateX(50%); }
+  .pb-marker .flag::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -4px; border: 4px solid transparent; border-top-color: inherit; border-top-color: var(--flag, var(--ink)); }
+  .pb-marker.s-ok .dot, .pb-marker.s-ok .flag { background: var(--primary-active); --flag: var(--primary-active); }
+  .pb-marker.s-soft .dot, .pb-marker.s-soft .flag { background: #d48806; --flag: #d48806; }
+  .pb-marker.s-hard .dot, .pb-marker.s-hard .flag { background: #cf1322; --flag: #cf1322; }
+  .pb-marker.s-high .dot, .pb-marker.s-high .flag { background: #455a64; --flag: #455a64; }
+  .pb-marker.clamped .dot { border-style: dashed; }
+  .pb-labels { position: relative; height: 36px; margin: 8px 6px 0; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .pb-labels span { position: absolute; transform: translateX(-50%); text-align: center; line-height: 1.3; white-space: nowrap; }
+  html[dir="rtl"] .pb-labels span { transform: translateX(50%); }
+  .pb-labels span small { display: block; color: var(--text-3); font-size: 11px; }
+  .pb-labels span b { color: var(--ink); }
+  .pb-labels .avg b { color: var(--primary-active); }
+  .pb-status { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  .pb-status svg { flex: none; margin-top: 2px; }
+  .pb-status.ok { background: var(--primary-bg-2); color: var(--primary-active); }
+  .pb-status.high { background: #f5f7f8; color: #455a64; }
+  .pb-status.soft { background: var(--warn-bg); border: 1px solid var(--warn-border); color: #613400; flex-direction: column; gap: 10px; }
+  .pb-status.hard { background: var(--error-bg); border: 1px solid var(--error-border); color: #a8071a; }
+  .pb-status .row { display: flex; gap: 8px; }
+  .confirm {
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; font-weight: 600; color: #613400;
+    padding: 4px 10px 4px 8px; border: 1px solid #ffd591; background: #fff; border-radius: 6px; align-self: flex-start;
+  }
+  .confirm input { accent-color: #d48806; width: 16px; height: 16px; margin: 0; cursor: pointer; }
+  .confirm.checked { border-color: #d48806; background: #fff7e6; }
+  .confirm-note { font-size: 12px; color: #ad6800; }
+  .flash { animation: flash .9s ease; }
+  @keyframes flash { 0%,100% { box-shadow: 0 0 0 0 rgba(250,173,20,0); } 30% { box-shadow: 0 0 0 4px rgba(250,173,20,.45); } }
+  .flash-red { animation: flashR .9s ease; }
+  @keyframes flashR { 0%,100% { box-shadow: 0 0 0 0 rgba(255,77,79,0); } 30% { box-shadow: 0 0 0 4px rgba(255,77,79,.35); } }
+  .pb-skel { margin-top: 10px; border: 1px solid var(--split); border-radius: 10px; padding: 16px; }
+  .pb-skel div { height: 12px; border-radius: 6px; background: linear-gradient(90deg, #f0f0f0 25%, #e6e6e6 37%, #f0f0f0 63%); background-size: 400% 100%; animation: sk 1.2s ease infinite; }
+  .pb-skel div + div { margin-top: 12px; }
+  .pb-skel .w1 { width: 72%; } .pb-skel .w2 { height: 10px; } .pb-skel .w3 { width: 45%; }
+  @keyframes sk { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+  /* ---------- Footer bar ---------- */
+  .footbar {
+    position: fixed; bottom: 0; inset-inline-start: var(--sidebar); inset-inline-end: 0; height: 48px; background: #fff;
+    box-shadow: 0 -1px 0 var(--split), 0 -6px 16px rgba(0,0,0,0.03); display: flex; align-items: center; justify-content: flex-end; padding: 0 16px; z-index: 15;
+  }
+  .btn-primary { height: 32px; padding: 0 16px; border-radius: 6px; border: 0; background: var(--primary); color: #fff; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-primary:disabled { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.25); border: 1px solid var(--border); cursor: not-allowed; }
+  .spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.5); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .feedback-tab { position: fixed; inset-inline-end: 0; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; rotate: 180deg; background: var(--primary); color: #fff; font-weight: 700; padding: 14px 8px; border-radius: 0 6px 6px 0; font-size: 13px; z-index: 10; }
+  html[dir="rtl"] .feedback-tab { rotate: 0deg; border-radius: 0 6px 6px 0; }
+
+  /* ---------- Modal ---------- */
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; z-index: 60; padding: 16px; }
+  .modal-bg.open { display: flex; }
+  .modal { background: #fff; border-radius: 12px; width: 460px; max-width: 100%; padding: 24px; box-shadow: 0 12px 40px rgba(0,0,0,.2); }
+  .modal h3 { margin: 0 0 6px; font-size: 18px; color: var(--ink); display: flex; gap: 10px; align-items: center; }
+  .modal p { margin: 0 0 14px; color: var(--text-2); }
+  .modal dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0 0 18px; font-size: 13px; background: #fafafa; border-radius: 8px; padding: 12px 14px; }
+  .modal dt { color: var(--text-3); }
+  .modal dd { margin: 0; font-weight: 600; }
+  .modal .actions { display: flex; justify-content: flex-end; gap: 8px; }
+  .btn-default { height: 32px; padding: 0 15px; border-radius: 6px; border: 1px solid var(--border); background: #fff; cursor: pointer; }
+  .btn-default:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* ---------- Prototype controls ---------- */
+  .proto-toggle {
+    position: fixed; bottom: 60px; inset-inline-end: 16px; z-index: 40; background: #1f1f1f; color: #fff; border: 0; border-radius: 999px;
+    height: 36px; padding: 0 16px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.25);
+    font-family: Manrope, sans-serif;
+  }
+  .proto {
+    position: fixed; top: 84px; bottom: 104px; inset-inline-end: 16px; width: 360px; max-width: calc(100vw - 32px); z-index: 41;
+    background: #1f1f1f; color: #e8e8e8; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.35); display: none; flex-direction: column; overflow: hidden;
+    font-family: Manrope, sans-serif; font-size: 13px; direction: ltr; text-align: left;
+  }
+  .proto.open { display: flex; }
+  .proto header { padding: 14px 16px 10px; border-bottom: 1px solid #333; display: flex; align-items: center; }
+  .proto header b { font-size: 14px; }
+  .proto header span { margin-left: 8px; font-size: 11px; background: #333; padding: 1px 6px; border-radius: 4px; color: #aaa; }
+  .proto header button { margin-left: auto; background: none; border: 0; color: #aaa; cursor: pointer; font-size: 18px; line-height: 1; }
+  .proto .body { overflow: auto; padding: 4px 16px 16px; }
+  .proto h4 { margin: 16px 0 8px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #8c8c8c; }
+  .proto .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .proto .seg label { display: flex; gap: 6px; align-items: center; padding: 6px 8px; border: 1px solid #3a3a3a; border-radius: 6px; cursor: pointer; font-size: 12px; }
+  .proto .seg label:has(input:checked) { border-color: #43ab73; background: #17301f; }
+  .proto .seg input { accent-color: #43ab73; margin: 0; }
+  .proto .btns { display: flex; flex-wrap: wrap; gap: 6px; }
+  .proto .btns button { background: #2b2b2b; color: #e8e8e8; border: 1px solid #3a3a3a; border-radius: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; font-family: inherit; }
+  .proto .btns button:hover { border-color: #43ab73; }
+  .proto .btns button:disabled { opacity: .4; cursor: not-allowed; }
+  .proto .kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 12px; }
+  .proto .kv span:nth-child(odd) { color: #8c8c8c; }
+  .proto input[type=range] { width: 100%; accent-color: #43ab73; }
+  .proto .rules { font-size: 12px; color: #bfbfbf; margin: 0; padding-left: 16px; }
+  .proto .rules li { margin: 2px 0; }
+  .log { background: #141414; border-radius: 6px; padding: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; line-height: 1.5; max-height: 220px; overflow: auto; }
+  .log div { white-space: pre-wrap; word-break: break-word; }
+  .log .t { color: #666; }
+  .log .req { color: #69b1ff; } .log .hit { color: #95de64; } .log .err { color: #ff7875; } .log .evt { color: #ffd666; } .log .muted { color: #8c8c8c; }
+
+  @media (max-width: 900px) {
+    :root { --sidebar: 0px; }
+    .sidebar { display: none; }
+    .topbar { padding: 0 16px; }
+    .topbar .agency, .topbar .tool-btn { display: none; }
+    main { padding: 88px 16px 96px; }
+    .card { padding: 28px 16px 40px; }
+    .step span { display: none; }
+    .feedback-tab { display: none; }
+    .proto-toggle { padding: 0; width: 40px; height: 40px; justify-content: center; }
+    .proto-toggle .pt-label { display: none; }
+    .proto { top: 80px; bottom: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Sidebar ===== -->
+<aside class="sidebar">
+  <div class="brand">
+    <span>Profolio<sup>TM</sup></span>
+    <svg width="24" height="22" viewBox="0 0 22 19" fill="currentColor" aria-hidden="true"><path d="M11 1.2 2.4 6.1v6.8L11 17.8l8.6-4.9V6.1L11 1.2Zm0 2.1 6.7 3.8v4.8L11 15.7l-6.7-3.8V7.1L11 3.3Zm-1.9 4.9v4.4h3.8V8.2L11 7.1 9.1 8.2Z"/></svg>
+  </div>
+  <ul class="nav">
+    <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12A9 9 0 1 1 12 3v9h9Z"/></svg><span data-i18n="navOverview">Overview</span></li>
+    <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span data-i18n="navListings">Listings</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg></li>
+    <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg><span data-i18n="navReports">Reports</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg></li>
+    <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg><span data-i18n="navInsights">Insights</span><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg></li>
+    <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M16 12h2"/></svg><span data-i18n="navWallets">Manage Wallets</span><span class="new" data-i18n="new">NEW</span></li>
+  </ul>
+  <button class="add-btn" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z"/></svg><span data-i18n="addProperty">Add Property</span></button>
+  <div class="sidebar-foot">
+    <div class="tier"><span data-i18n="yourCategory">Your Category</span><b data-i18n="gold">Gold</b></div>
+    <div class="lang-row"><button class="lang-btn" id="langBtn" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg><span id="langLabel">EN</span></button></div>
+  </div>
+</aside>
+
+<!-- ===== Header ===== -->
+<header class="topbar">
+  <h1 id="pageTitle" data-i18n="addProperty">Add Property</h1>
+  <span class="agency">Cash Peak</span>
+  <span class="spacer"></span>
+  <span class="tool-btn badge-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></span>
+  <span class="tool-btn"><svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" fill="#4285f4"/><rect x="13" y="3" width="8" height="8" fill="#34a853"/><rect x="3" y="13" width="8" height="8" fill="#fbbc05"/><rect x="13" y="13" width="8" height="8" fill="#ea4335"/></svg><span data-i18n="agencyTools">Agency Tools</span></span>
+  <span class="avatar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+</header>
+
+<!-- ===== Form ===== -->
+<main>
+  <div class="card">
+    <div class="steps">
+      <div class="step active"><i>1</i><span data-i18n="stepDetails">Details</span></div>
+      <div class="step-line"></div>
+      <div class="step"><i>2</i><span data-i18n="stepAmenities">Amenities</span></div>
+      <div class="step-line"></div>
+      <div class="step"><i>3</i><span data-i18n="stepUploads">Uploads</span></div>
+    </div>
+    <h2 class="form-title" data-i18n="formTitle">Please provide property details</h2>
+
+    <form class="form" id="paa" novalidate autocomplete="off">
+      <h3 class="section-title" data-i18n="secType">Type and Purpose</h3>
+      <div class="field" data-f="category">
+        <label class="req" for="category" data-i18n="category">Category</label>
+        <select class="control" id="category"></select>
+        <div class="field-error" data-i18n="errSelect">Please select an option</div>
+      </div>
+      <div class="field" data-f="subcategory">
+        <label class="req" for="subcategory" data-i18n="subcategory">Sub Category</label>
+        <select class="control" id="subcategory" disabled></select>
+        <div class="field-error" data-i18n="errSelect">Please select an option</div>
+      </div>
+      <div class="field" data-f="purpose">
+        <label class="req" for="purpose" data-i18n="purpose">Purpose</label>
+        <select class="control" id="purpose"></select>
+        <div class="field-error" data-i18n="errSelect">Please select an option</div>
+      </div>
+
+      <hr class="divider" />
+      <h3 class="section-title" data-i18n="secLocation">Location and Address</h3>
+      <div class="field" data-f="location">
+        <label class="req" for="location" data-i18n="location">Location</label>
+        <select class="control" id="location"></select>
+        <div class="field-error" data-i18n="errSelect">Please select an option</div>
+        <div class="map" aria-hidden="true">
+          <svg class="pin" width="18" height="24" viewBox="0 0 24 32" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20s12-11 12-20C24 5.4 18.6 0 12 0Zm0 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/></svg>
+          <small>© Mapbox © OpenStreetMap</small>
+        </div>
+      </div>
+      <div class="field">
+        <label for="address" data-i18n="address">Address</label>
+        <input class="control" id="address" />
+      </div>
+      <div class="field">
+        <label for="unit" data-i18n="unit">Unit No.</label>
+        <input class="control" id="unit" />
+      </div>
+      <div class="field" data-f="completion">
+        <label class="req" for="completion" data-i18n="completion">Completion Status</label>
+        <select class="control" id="completion" disabled></select>
+        <div class="field-error" data-i18n="errSelect">Please select an option</div>
+      </div>
+
+      <hr class="divider" />
+      <h3 class="section-title" data-i18n="secDetails">Property Details</h3>
+      <div class="field" data-f="ref">
+        <label class="req" for="ref" data-i18n="ref">Reference Number</label>
+        <input class="control" id="ref" />
+        <button type="button" class="ghost-green" id="autoRef" data-i18n="autoGen">Auto Generate</button>
+        <div class="field-error" data-i18n="errRequired">This field is required</div>
+      </div>
+      <div class="field">
+        <label for="titleEn" data-i18n="titleEn">Title (English)</label>
+        <div class="alert"><svg class="ico" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="11"/><path d="M12 6v8M12 17.5v.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg><span data-i18n="titleEnHint">The title must be in English only. Not adding content in English may lead to reduced visibility of your ad in English searches due to the missing information.</span></div>
+        <input class="control" id="titleEn" maxlength="150" data-i18n-ph="titlePh" placeholder="Please enter title" />
+      </div>
+      <div class="field" data-f="area">
+        <label class="req" for="area" data-i18n="area">Area (Square Meters)</label>
+        <input class="control" id="area" inputmode="decimal" />
+        <div class="hint" id="areaHint">0.00 Square Feet / 0.00 Square Yards</div>
+        <div class="field-error" data-i18n="errRequired">This field is required</div>
+      </div>
+
+      <!-- ===== NEW: Price + Price vs Market band ===== -->
+      <div class="field" data-f="price" id="priceField">
+        <label class="req" for="price" id="priceLabel" data-i18n="price">Price</label>
+        <div class="affix">
+          <input id="price" inputmode="numeric" data-i18n-ph="pricePh" placeholder="Enter price" aria-describedby="pbStatus" />
+          <span class="suffix" id="priceSuffix">EGP</span>
+        </div>
+        <div class="field-error" id="priceError">Please enter a valid price</div>
+        <div class="pb-skel" id="pbSkel" hidden aria-hidden="true"><div class="w1"></div><div class="w2"></div><div class="w3"></div></div>
+        <div class="pb" id="pb" hidden aria-live="polite"></div>
+      </div>
+
+      <div class="field">
+        <label for="ownership" data-i18n="ownership">Ownership Status</label>
+        <select class="control" id="ownership"></select>
+      </div>
+
+      <hr class="divider" />
+      <h3 class="section-title" data-i18n="secContact">Contact Details</h3>
+      <div class="field">
+        <label class="req" for="owner" data-i18n="owner">Listing Owner</label>
+        <select class="control" id="owner"><option>Cash Peak</option></select>
+      </div>
+      <div class="alert"><svg class="ico" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="11"/><path d="M12 6v8M12 17.5v.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg><span data-i18n="ownerHint">The following owner information will be linked to your listing:</span></div>
+    </form>
+  </div>
+</main>
+
+<div class="footbar"><button class="btn-primary" id="nextBtn" type="button"><span data-i18n="next">Next</span></button></div>
+<div class="feedback-tab" data-i18n="feedback">Share Feedback</div>
+
+<!-- ===== Success modal ===== -->
+<div class="modal-bg" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <h3 id="modalTitle"><svg width="22" height="22" viewBox="0 0 24 24" fill="#249f62"><circle cx="12" cy="12" r="11"/><path d="m7 12.5 3.2 3L17 9" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="modalTitle">Details step complete</span></h3>
+    <p data-i18n="modalBody">In the live flow the seller would now continue to Amenities. The prototype ends here.</p>
+    <dl id="modalDl"></dl>
+    <div class="actions">
+      <button class="btn-default" type="button" id="modalBack" data-i18n="modalBack">Back to form</button>
+      <button class="btn-primary" type="button" id="modalNew" data-i18n="modalNew">Start a new listing</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Prototype controls (not part of the product UI) ===== -->
+<button class="proto-toggle" id="protoToggle" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg><span class="pt-label">Prototype controls</span></button>
+<aside class="proto" id="proto" aria-label="Prototype controls">
+  <header><b>Prototype controls</b><span>not product UI</span><button type="button" id="protoClose" aria-label="Close">×</button></header>
+  <div class="body">
+    <h4>Quick start</h4>
+    <div class="btns">
+      <button type="button" data-fill="new">Fill sample listing</button>
+      <button type="button" data-fill="edit">Open existing ad (edit path)</button>
+      <button type="button" data-fill="reset">Reset form</button>
+    </div>
+
+    <h4>Set price relative to band</h4>
+    <div class="btns" id="presetBtns">
+      <button type="button" data-preset="within">Within range</button>
+      <button type="button" data-preset="high">Above max</button>
+      <button type="button" data-preset="soft">Below min (&lt;15%)</button>
+      <button type="button" data-preset="hard">&gt;15% below min</button>
+    </div>
+
+    <h4>BI range endpoint</h4>
+    <div class="seg">
+      <label><input type="radio" name="biMode" value="normal" checked />Normal</label>
+      <label><input type="radio" name="biMode" value="nodata" />No range returned</label>
+      <label><input type="radio" name="biMode" value="down" />Unavailable (5xx)</label>
+      <label><input type="radio" name="biMode" value="slow" />Slow (&gt; timeout)</label>
+    </div>
+    <div style="margin-top:10px" class="kv">
+      <span>Latency</span><span><input type="range" id="latency" min="100" max="1800" step="100" value="600" /> <b id="latencyVal">600 ms</b></span>
+      <span>Timeout</span><span>2,000 ms → band suppressed</span>
+      <span>Cache TTL</span><span>5 min per parameter combination</span>
+      <span>BI data version</span><span id="biVer">v1</span>
+    </div>
+    <div class="btns" style="margin-top:10px">
+      <button type="button" id="biUpdate">BI publishes new ranges (+10%)</button>
+      <button type="button" id="cacheExpire">Expire cache now</button>
+    </div>
+
+    <h4>Current request</h4>
+    <div class="kv" id="reqState"></div>
+
+    <h4>Rules implemented</h4>
+    <ul class="rules">
+      <li>Band needs Purpose, Location, Category (sub category) and Completion Status, plus a valid price.</li>
+      <li>BI is called when any of the four attributes change, never on price edits.</li>
+      <li>At or above the minimum: no warning.</li>
+      <li>Below the minimum by up to 15%: soft block. Seller must tick “Post anyway”.</li>
+      <li>More than 15% below the minimum: hard block, the ad can’t be posted.</li>
+      <li>No range, BI error or timeout: nothing shown, posting unaffected.</li>
+    </ul>
+
+    <h4>Event log</h4>
+    <div class="log" id="log"></div>
+  </div>
+</aside>
+
+<script>
+(() => {
+  // ---------------------------------------------------------------------------
+  // i18n
+  // ---------------------------------------------------------------------------
+  const T = {
+    en: {
+      navOverview: "Overview", navListings: "Listings", navReports: "Reports", navInsights: "Insights", navWallets: "Manage Wallets", new: "NEW",
+      addProperty: "Add Property", editProperty: "Edit Property", yourCategory: "Your Category", gold: "Gold", agencyTools: "Agency Tools",
+      stepDetails: "Details", stepAmenities: "Amenities", stepUploads: "Uploads", formTitle: "Please provide property details",
+      secType: "Type and Purpose", category: "Category", subcategory: "Sub Category", purpose: "Purpose",
+      secLocation: "Location and Address", location: "Location", chooseArea: "Choose Area...", address: "Address", unit: "Unit No.", completion: "Completion Status",
+      secDetails: "Property Details", ref: "Reference Number", autoGen: "Auto Generate", titleEn: "Title (English)", titlePh: "Please enter title",
+      titleEnHint: "The title must be in English only. Not adding content in English may lead to reduced visibility of your ad in English searches due to the missing information.",
+      area: "Area (Square Meters)", areaHint: (ft, yd) => `${ft} Square Feet / ${yd} Square Yards`,
+      price: "Price", priceRent: "Rent", pricePh: "Enter price", egp: "EGP", egpMonth: "EGP / month",
+      ownership: "Ownership Status", secContact: "Contact Details", owner: "Listing Owner", ownerHint: "The following owner information will be linked to your listing:",
+      next: "Next", checking: "Checking price…", feedback: "Share Feedback",
+      errSelect: "Please select an option", errRequired: "This field is required", errPrice: "Please enter a valid price",
+      // Price band (copy from ticket)
+      pbHead: (loc, min, max, avg) => `Similar properties in <b>${loc}</b> are listed between <b>${min}</b> and <b>${max}</b> EGP. Average: <b>${avg}</b> EGP.`,
+      pbSource: "Market range", pbMin: "Min", pbAvg: "Average", pbMax: "Max",
+      pbOk: "Your price is within the accepted range for similar properties.",
+      pbHigh: "Your price is above the typical range for similar properties.",
+      pbSoft: "Your price is below the accepted range for similar properties. Ads priced this low are usually rejected.",
+      pbPostAnyway: "Post anyway",
+      pbConfirmNeeded: "Confirm “Post anyway” or update your price to continue.",
+      pbHard: "Your price is more than 15% below the accepted range for similar properties. Ads this far below the range can’t be posted. Please update your price to continue.",
+      modalTitle: "Details step complete", modalBody: "In the live flow the seller would now continue to Amenities. The prototype ends here.",
+      modalBack: "Back to form", modalNew: "Start a new listing",
+      mListing: "Listing", mPrice: "Price", mBand: "Market range", mOutcome: "Price check", none: "Not shown",
+      oOk: "Within range", oHigh: "Above range, no warning", oSoft: "Below range, seller confirmed “Post anyway”", oNone: "No band (attributes incomplete, no data, or BI unavailable)",
+      compactM: "M", compactK: "K",
+      opt: {
+        residential: "Residential", commercial: "Commercial",
+        apartment: "Apartment", villa: "Villa", duplex: "Duplex", penthouse: "Penthouse", townhouse: "Townhouse", twinhouse: "Twin House", chalet: "Chalet",
+        office: "Office", shop: "Shop", clinic: "Clinic",
+        sale: "For Sale", rent: "For Rent", ready: "Ready", offplan: "Off-Plan",
+        freehold: "Freehold", leasehold: "Leasehold",
+        newcairo: "New Cairo, Cairo", zayed: "Sheikh Zayed, Giza", october: "6th of October, Giza", maadi: "Maadi, Cairo", zamalek: "Zamalek, Cairo",
+        capital: "New Capital City, Cairo", northcoast: "North Coast, Matruh", nasr: "Nasr City, Cairo"
+      },
+      locShort: { newcairo: "New Cairo", zayed: "Sheikh Zayed", october: "6th of October", maadi: "Maadi", zamalek: "Zamalek", capital: "New Capital City", northcoast: "North Coast", nasr: "Nasr City" }
+    },
+    ar: {
+      navOverview: "نظرة عامة", navListings: "الإعلانات", navReports: "التقارير", navInsights: "الرؤى", navWallets: "إدارة المحافظ", new: "جديد",
+      addProperty: "إضافة عقار", editProperty: "تعديل العقار", yourCategory: "فئتك", gold: "ذهبي", agencyTools: "أدوات الوكالة",
+      stepDetails: "التفاصيل", stepAmenities: "المرافق", stepUploads: "التحميلات", formTitle: "يرجى تقديم تفاصيل العقار",
+      secType: "النوع والغرض", category: "الفئة", subcategory: "الفئة الفرعية", purpose: "الغرض",
+      secLocation: "الموقع والعنوان", location: "الموقع", chooseArea: "اختر المنطقة...", address: "العنوان", unit: "رقم الوحدة", completion: "حالة الإنشاء",
+      secDetails: "تفاصيل العقار", ref: "الرقم المرجعي", autoGen: "إنشاء تلقائي", titleEn: "العنوان (بالإنجليزية)", titlePh: "أدخل العنوان",
+      titleEnHint: "يجب أن يكون العنوان باللغة الإنجليزية فقط. عدم إضافة محتوى باللغة الإنجليزية قد يقلل من ظهور إعلانك في عمليات البحث باللغة الإنجليزية.",
+      area: "المساحة (متر مربع)", areaHint: (ft, yd) => `${ft} قدم مربع / ${yd} ياردة مربعة`,
+      price: "السعر", priceRent: "الإيجار", pricePh: "أدخل السعر", egp: "جنيه", egpMonth: "جنيه / شهريًا",
+      ownership: "حالة الملكية", secContact: "بيانات التواصل", owner: "مالك الإعلان", ownerHint: "سيتم ربط بيانات المالك التالية بإعلانك:",
+      next: "التالي", checking: "جارٍ التحقق من السعر…", feedback: "شارك رأيك",
+      errSelect: "يرجى اختيار قيمة", errRequired: "هذا الحقل مطلوب", errPrice: "يرجى إدخال سعر صحيح",
+      pbHead: (loc, min, max, avg) => `العقارات المشابهة في <b>${loc}</b> معروضة بين <b>${min}</b> و <b>${max}</b> جنيه. المتوسط: <b>${avg}</b> جنيه.`,
+      pbSource: "نطاق السوق", pbMin: "الحد الأدنى", pbAvg: "المتوسط", pbMax: "الحد الأقصى",
+      pbOk: "سعرك ضمن النطاق المقبول للعقارات المشابهة.",
+      pbHigh: "سعرك أعلى من النطاق المعتاد للعقارات المشابهة.",
+      pbSoft: "سعرك أقل من النطاق المقبول للعقارات المشابهة. الإعلانات بهذا السعر عادة ما تُرفض.",
+      pbPostAnyway: "انشر على أي حال",
+      pbConfirmNeeded: "أكّد «انشر على أي حال» أو عدّل السعر للمتابعة.",
+      pbHard: "سعرك أقل من النطاق المقبول للعقارات المشابهة بأكثر من 15٪. لا يمكن نشر الإعلانات بهذا السعر. يرجى تعديل السعر للمتابعة.",
+      modalTitle: "اكتملت خطوة التفاصيل", modalBody: "في المنتج الفعلي سينتقل البائع الآن إلى المرافق. ينتهي النموذج الأولي هنا.",
+      modalBack: "العودة إلى النموذج", modalNew: "إعلان جديد",
+      mListing: "الإعلان", mPrice: "السعر", mBand: "نطاق السوق", mOutcome: "فحص السعر", none: "غير معروض",
+      oOk: "ضمن النطاق", oHigh: "أعلى من النطاق، بدون تحذير", oSoft: "أقل من النطاق، أكّد البائع «انشر على أي حال»", oNone: "بدون نطاق",
+      compactM: " مليون", compactK: " ألف",
+      opt: {
+        residential: "سكني", commercial: "تجاري",
+        apartment: "شقة", villa: "فيلا", duplex: "دوبلكس", penthouse: "بنتهاوس", townhouse: "تاون هاوس", twinhouse: "توين هاوس", chalet: "شاليه",
+        office: "مكتب", shop: "محل تجاري", clinic: "عيادة",
+        sale: "للبيع", rent: "للإيجار", ready: "جاهز", offplan: "قيد الإنشاء",
+        freehold: "تملك حر", leasehold: "حق انتفاع",
+        newcairo: "القاهرة الجديدة، القاهرة", zayed: "الشيخ زايد، الجيزة", october: "السادس من أكتوبر، الجيزة", maadi: "المعادي، القاهرة", zamalek: "الزمالك، القاهرة",
+        capital: "العاصمة الإدارية الجديدة، القاهرة", northcoast: "الساحل الشمالي، مطروح", nasr: "مدينة نصر، القاهرة"
+      },
+      locShort: { newcairo: "القاهرة الجديدة", zayed: "الشيخ زايد", october: "السادس من أكتوبر", maadi: "المعادي", zamalek: "الزمالك", capital: "العاصمة الإدارية الجديدة", northcoast: "الساحل الشمالي", nasr: "مدينة نصر" }
+    }
+  };
+  let lang = "en";
+  const t = (k) => T[lang][k];
+  const o = (k) => T[lang].opt[k];
+
+  const SUBS = {
+    residential: ["apartment", "villa", "duplex", "penthouse", "townhouse", "twinhouse", "chalet"],
+    commercial: ["office", "shop", "clinic"]
+  };
+  const LOCS = ["newcairo", "zayed", "october", "maadi", "zamalek", "capital", "northcoast", "nasr"];
+
+  // ---------------------------------------------------------------------------
+  // Mock BI endpoint: GET /price-range?purpose&location&category&completion
+  // Returns {min, avg, max} in absolute EGP, or null when BI has no range.
+  // ---------------------------------------------------------------------------
+  const LOC_AVG = { newcairo: 7.5e6, zayed: 8e6, october: 4.2e6, maadi: 6.5e6, zamalek: 14e6, capital: 5.6e6, northcoast: 9e6, nasr: 3.8e6 };
+  const TYPE_MULT = { apartment: 1, duplex: 1.5, penthouse: 1.7, villa: 3.2, townhouse: 2.4, twinhouse: 2.8, chalet: 0.9, office: 1.2, shop: 1.4, clinic: 0.8 };
+  const NO_DATA = [
+    (p) => p.category === "chalet" && p.location !== "northcoast",
+    (p) => ["villa", "townhouse", "twinhouse"].includes(p.category) && ["zamalek", "nasr"].includes(p.location),
+    (p) => ["office", "clinic"].includes(p.category) && p.location === "northcoast",
+    (p) => p.purpose === "rent" && p.completion === "offplan"
+  ];
+  const bi = { mode: "normal", latency: 600, version: 1 };
+  const TIMEOUT_MS = 2000, SLOW_MS = 3500, CACHE_TTL = 5 * 60 * 1000;
+
+  function nice(x) {
+    const step = x >= 1e6 ? 50000 : x >= 1e5 ? 5000 : 500;
+    return Math.max(step, Math.round(x / step) * step);
+  }
+  function biCompute(p) {
+    if (bi.mode === "nodata" || NO_DATA.some((f) => f(p))) return null;
+    let avg = LOC_AVG[p.location] * TYPE_MULT[p.category];
+    if (p.completion === "offplan") avg *= 0.88;
+    if (p.purpose === "rent") avg *= 0.006;
+    avg *= Math.pow(1.1, bi.version - 1);
+    return { min: nice(avg * 0.55), avg: nice(avg), max: nice(avg * 1.8) };
+  }
+  function biFetch(p) {
+    return new Promise((resolve, reject) => {
+      const lat = bi.mode === "slow" ? SLOW_MS : bi.latency;
+      const timer = setTimeout(() => reject(new Error("timeout")), TIMEOUT_MS);
+      setTimeout(() => {
+        clearTimeout(timer);
+        if (bi.mode === "down") return reject(new Error("503 Service Unavailable"));
+        resolve(biCompute(p));
+      }, bi.mode === "down" ? Math.min(lat, 400) : lat);
+    });
+  }
+
+  // Legion-side cache, keyed by parameter combination
+  const cache = new Map();
+
+  // ---------------------------------------------------------------------------
+  // DOM
+  // ---------------------------------------------------------------------------
+  const $ = (id) => document.getElementById(id);
+  const el = {
+    category: $("category"), subcategory: $("subcategory"), purpose: $("purpose"), location: $("location"), completion: $("completion"),
+    ref: $("ref"), area: $("area"), price: $("price"), ownership: $("ownership"), titleEn: $("titleEn"), address: $("address"), unit: $("unit"),
+    pb: $("pb"), pbSkel: $("pbSkel"), priceField: $("priceField"), priceError: $("priceError"), nextBtn: $("nextBtn"), log: $("log")
+  };
+
+  const state = {
+    mode: "add",           // add | edit
+    key: null,             // current attribute combination key
+    status: "idle",        // idle | loading | ready | none | error
+    band: null,            // {min, avg, max}
+    pending: null,         // promise of the in-flight request
+    reqId: 0,
+    confirmed: false,      // "Post anyway" ticked
+    warnedAt: null,        // price when a warning was last shown
+    lastTier: null,        // last rendered tier, for event logging
+    changedAfterWarning: false,
+    lastReq: null
+  };
+
+  function fillSelect(sel, keys, placeholder) {
+    const cur = sel.value;
+    sel.innerHTML = `<option value="">${placeholder || ""}</option>` + keys.map((k) => `<option value="${k}">${o(k)}</option>`).join("");
+    if (keys.includes(cur)) sel.value = cur;
+  }
+  function renderOptions() {
+    fillSelect(el.category, ["residential", "commercial"]);
+    fillSelect(el.subcategory, el.category.value ? SUBS[el.category.value] : []);
+    el.subcategory.disabled = !el.category.value;
+    fillSelect(el.purpose, ["sale", "rent"]);
+    fillSelect(el.location, LOCS, t("chooseArea"));
+    fillSelect(el.completion, ["ready", "offplan"]);
+    el.completion.disabled = !el.purpose.value;
+    fillSelect(el.ownership, ["freehold", "leasehold"]);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Formatting
+  // ---------------------------------------------------------------------------
+  const fmt = (n) => Math.round(n).toLocaleString("en-US");
+  function compact(n) {
+    if (n >= 1e6) return (+(n / 1e6).toFixed(n >= 1e7 ? 1 : 2)).toString() + t("compactM");
+    if (n >= 1e3) return (+(n / 1e3).toFixed(n >= 1e5 ? 0 : 1)).toString() + t("compactK");
+    return fmt(n);
+  }
+  const parsePrice = () => {
+    const raw = el.price.value.replace(/[^\d]/g, "");
+    return raw ? Number(raw) : NaN;
+  };
+  const priceValid = () => { const p = parsePrice(); return Number.isFinite(p) && p > 0; };
+
+  // ---------------------------------------------------------------------------
+  // Attribute → BI request (never on price change)
+  // ---------------------------------------------------------------------------
+  function params() {
+    const p = { purpose: el.purpose.value, location: el.location.value, category: el.subcategory.value, completion: el.completion.value };
+    return Object.values(p).every(Boolean) ? p : null;
+  }
+  const keyOf = (p) => `${p.purpose}|${p.location}|${p.category}|${p.completion}`;
+
+  function onAttributesChanged() {
+    const p = params();
+    const key = p ? keyOf(p) : null;
+    if (key === state.key && state.status !== "error") return;
+    state.key = key;
+    state.confirmed = false;
+    state.lastTier = null;
+    if (!p) {
+      state.status = "idle"; state.band = null; state.pending = null; state.reqId++;
+      renderBand(); renderReq();
+      return;
+    }
+    const hit = cache.get(key);
+    if (hit && Date.now() - hit.ts < CACHE_TTL) {
+      state.status = hit.data ? "ready" : "none"; state.band = hit.data; state.pending = null; state.reqId++;
+      log("hit", `cache HIT ${key}` + (hit.data ? ` → ${compact(hit.data.min)}–${compact(hit.data.max)} (v${hit.v})` : " → no range"));
+      state.lastReq = { key, source: "cache", result: hit.data ? "range" : "no range" };
+      renderBand(); renderReq();
+      return;
+    }
+    request(p, key);
+  }
+
+  function request(p, key) {
+    const id = ++state.reqId;
+    state.status = "loading"; state.band = null;
+    const started = performance.now();
+    log("req", `GET /bi/price-range ${JSON.stringify(p)}`);
+    state.lastReq = { key, source: "BI", result: "pending…" };
+    renderBand(); renderReq();
+    state.pending = biFetch(p).then((data) => {
+      if (id !== state.reqId) return;
+      cache.set(key, { data, ts: Date.now(), v: bi.version });
+      state.status = data ? "ready" : "none"; state.band = data;
+      const ms = Math.round(performance.now() - started);
+      log(data ? "hit" : "muted", data ? `200 in ${ms} ms → min ${fmt(data.min)} · avg ${fmt(data.avg)} · max ${fmt(data.max)} (cached)` : `200 in ${ms} ms → no range for combination; nothing shown (cached)`);
+      state.lastReq = { key, source: "BI", result: data ? `range (${ms} ms)` : "no range" };
+    }).catch((err) => {
+      if (id !== state.reqId) return;
+      state.status = "error"; state.band = null;
+      log("err", `${err.message} → no band, no warning, posting proceeds`);
+      state.lastReq = { key, source: "BI", result: err.message };
+    }).finally(() => {
+      if (id !== state.reqId) return;
+      state.pending = null;
+      renderBand(); renderReq();
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Band rendering
+  // ---------------------------------------------------------------------------
+  function tierOf(price, b) {
+    if (price < b.min * 0.85) return "hard";
+    if (price < b.min) return "soft";
+    if (price > b.max) return "high";
+    return "ok";
+  }
+  const ICON = {
+    info: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>',
+    ok: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="11"/><path d="m7 12.5 3.2 3L17 9" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    high: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="11"/><path d="M12 11v6M12 7.5v.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>',
+    warn: '<svg width="16" height="16" viewBox="0 0 24 24" fill="#faad14"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v5M12 17.5v.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>',
+    stop: '<svg width="16" height="16" viewBox="0 0 24 24" fill="#ff4d4f"><circle cx="12" cy="12" r="11"/><path d="m8.5 8.5 7 7m0-7-7 7" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>'
+  };
+
+  function renderBand() {
+    const showPrice = priceValid();
+    const loading = state.status === "loading" && showPrice;
+    el.pbSkel.hidden = !loading;
+    el.nextBtn.disabled = false;
+
+    if (!(state.status === "ready" && state.band && showPrice)) {
+      el.pb.hidden = true; el.pb.innerHTML = "";
+      return;
+    }
+    const b = state.band, price = parsePrice(), tier = tierOf(price, b);
+    const lo = b.min * 0.7, hi = b.max * 1.2;                // visual scale
+    const pos = (v) => Math.max(0, Math.min(100, ((v - lo) / (hi - lo)) * 100));
+    const hardEnd = pos(b.min * 0.85), minP = pos(b.min), maxP = pos(b.max), avgP = pos(b.avg);
+    const clamped = price < lo || price > hi;
+    const locName = T[lang].locShort[el.location.value];
+
+    let status = "";
+    if (tier === "ok") status = `<div class="pb-status ok" id="pbStatus">${ICON.ok}<span>${t("pbOk")}</span></div>`;
+    if (tier === "high") status = `<div class="pb-status high" id="pbStatus">${ICON.high}<span>${t("pbHigh")}</span></div>`;
+    if (tier === "hard") status = `<div class="pb-status hard" id="pbStatus">${ICON.stop}<span>${t("pbHard")}</span></div>`;
+    if (tier === "soft") status = `
+      <div class="pb-status soft" id="pbStatus">
+        <div class="row">${ICON.warn}<span>${t("pbSoft")}</span></div>
+        <label class="confirm ${state.confirmed ? "checked" : ""}"><input type="checkbox" id="postAnyway" ${state.confirmed ? "checked" : ""} /> ${t("pbPostAnyway")}</label>
+        <span class="confirm-note" id="confirmNote" hidden>${t("pbConfirmNeeded")}</span>
+      </div>`;
+
+    el.pb.hidden = false;
+    el.pb.innerHTML = `
+      <div class="pb-head">${ICON.info}<span>${t("pbHead")(locName, fmt(b.min), fmt(b.max), fmt(b.avg))}</span><span class="pb-src">${t("pbSource")}</span></div>
+      <div class="pb-bar" role="img" aria-label="${t("pbMin")} ${fmt(b.min)}, ${t("pbAvg")} ${fmt(b.avg)}, ${t("pbMax")} ${fmt(b.max)}. ${fmt(price)} ${t("egp")}">
+        <div class="pb-zone z-hard z-first" style="inset-inline-start:0;width:${hardEnd}%"></div>
+        <div class="pb-zone z-soft" style="inset-inline-start:${hardEnd}%;width:${minP - hardEnd}%"></div>
+        <div class="pb-zone z-ok" style="inset-inline-start:${minP}%;width:${maxP - minP}%"></div>
+        <div class="pb-zone z-high z-last" style="inset-inline-start:${maxP}%;width:${100 - maxP}%"></div>
+        <div class="pb-tick" style="inset-inline-start:${minP}%"></div>
+        <div class="pb-tick" style="inset-inline-start:${maxP}%"></div>
+        <div class="pb-tick avg" style="inset-inline-start:${avgP}%"></div>
+        <div class="pb-marker s-${tier} ${clamped ? "clamped" : ""}" style="inset-inline-start:${pos(price)}%">
+          <span class="flag">${clamped ? (price < lo ? "◀ " : "") : ""}${compact(price)}${clamped && price > hi ? " ▶" : ""}</span><span class="dot"></span>
+        </div>
+      </div>
+      <div class="pb-labels">
+        <span style="inset-inline-start:${minP}%"><b>${compact(b.min)}</b><small>${t("pbMin")}</small></span>
+        <span class="avg" style="inset-inline-start:${avgP}%"><b>${compact(b.avg)}</b><small>${t("pbAvg")}</small></span>
+        <span style="inset-inline-start:${maxP}%"><b>${compact(b.max)}</b><small>${t("pbMax")}</small></span>
+      </div>
+      ${status}`;
+
+    const cb = $("postAnyway");
+    if (cb) cb.addEventListener("change", () => {
+      state.confirmed = cb.checked;
+      cb.parentElement.classList.toggle("checked", cb.checked);
+      log("evt", cb.checked ? "event price_warning_confirmed (Post anyway)" : "event price_warning_unconfirmed");
+    });
+
+    if (tier !== state.lastTier) {
+      if (state.lastTier === null) log("evt", `event price_band_shown tier=${tier}`);
+      else log("evt", `event price_tier_changed ${state.lastTier} → ${tier}`);
+      if (tier === "soft" || tier === "hard") { log("evt", `event price_warning_shown type=${tier}`); state.warnedAt = price; state.changedAfterWarning = false; }
+      state.lastTier = tier;
+    }
+  }
+
+  function renderReq() {
+    const r = state.lastReq;
+    const p = params();
+    $("reqState").innerHTML = [
+      ["Attributes", p ? "complete" : "incomplete"],
+      ["Key", state.key || "—"],
+      ["Source", r ? r.source : "—"],
+      ["Result", r ? r.result : "—"],
+      ["Band status", state.status],
+      ["Cached combos", String(cache.size)]
+    ].map(([k, v]) => `<span>${k}</span><span>${v}</span>`).join("");
+    document.querySelectorAll("#presetBtns button").forEach((b) => (b.disabled = !(state.status === "ready" && state.band)));
+  }
+
+  // ---------------------------------------------------------------------------
+  // Price input
+  // ---------------------------------------------------------------------------
+  el.price.addEventListener("input", () => {
+    // Keep only digits and re-apply thousands separators, preserving caret position.
+    const input = el.price, caret = input.selectionStart ?? input.value.length;
+    const digitsBefore = input.value.slice(0, caret).replace(/\D/g, "").length;
+    const digits = input.value.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
+    input.value = digits ? Number(digits).toLocaleString("en-US") : "";
+    let pos = 0, seen = 0;
+    while (pos < input.value.length && seen < digitsBefore) { if (/\d/.test(input.value[pos])) seen++; pos++; }
+    input.setSelectionRange(pos, pos);
+    onPriceChanged();
+  });
+  function onPriceChanged() {
+    const f = el.priceField;
+    const raw = el.price.value;
+    const invalid = raw !== "" && !priceValid();
+    f.classList.toggle("has-error", invalid);
+    el.priceError.textContent = t("errPrice");
+    if (state.warnedAt !== null && !state.changedAfterWarning && parsePrice() !== state.warnedAt) {
+      state.changedAfterWarning = true;
+      log("evt", "event price_changed_after_warning");
+    }
+    if (state.confirmed) { state.confirmed = false; }
+    renderBand();
+  }
+  el.price.addEventListener("blur", () => { if (el.price.value) el.priceField.classList.remove("has-error"); onPriceChanged(); });
+
+  // ---------------------------------------------------------------------------
+  // Attribute listeners
+  // ---------------------------------------------------------------------------
+  el.category.addEventListener("change", () => { fillSelect(el.subcategory, el.category.value ? SUBS[el.category.value] : []); el.subcategory.disabled = !el.category.value; clearErr(el.category); onAttributesChanged(); });
+  el.purpose.addEventListener("change", () => { el.completion.disabled = !el.purpose.value; clearErr(el.purpose); updatePriceLabel(); onAttributesChanged(); });
+  [el.subcategory, el.location, el.completion].forEach((s) => s.addEventListener("change", () => { clearErr(s); onAttributesChanged(); }));
+  [el.ref, el.area].forEach((i) => i.addEventListener("input", () => clearErr(i)));
+  function clearErr(node) { node.closest(".field")?.classList.remove("has-error"); }
+
+  function updatePriceLabel() {
+    const rent = el.purpose.value === "rent";
+    $("priceLabel").textContent = rent ? t("priceRent") : t("price");
+    $("priceSuffix").textContent = rent ? t("egpMonth") : t("egp");
+  }
+  el.area.addEventListener("input", () => {
+    const m = parseFloat(el.area.value) || 0;
+    $("areaHint").textContent = t("areaHint")((m * 10.7639).toFixed(2), (m * 1.19599).toFixed(2));
+  });
+  $("autoRef").addEventListener("click", () => { el.ref.value = "CP-" + Math.random().toString(36).slice(2, 8).toUpperCase(); clearErr(el.ref); });
+
+  // ---------------------------------------------------------------------------
+  // Submit (Next)
+  // ---------------------------------------------------------------------------
+  el.nextBtn.addEventListener("click", async () => {
+    // 1. existing required-field validation
+    let firstBad = null;
+    const req = [["category", el.category], ["subcategory", el.subcategory], ["purpose", el.purpose], ["location", el.location], ["completion", el.completion], ["ref", el.ref], ["area", el.area]];
+    req.forEach(([, node]) => { const bad = !node.value.trim(); node.closest(".field").classList.toggle("has-error", bad); if (bad && !firstBad) firstBad = node; });
+    if (!priceValid()) { el.priceField.classList.add("has-error"); el.priceError.textContent = el.price.value ? t("errPrice") : t("errRequired"); firstBad = firstBad || el.price; }
+    if (firstBad) { firstBad.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+
+    // 2. make sure the band for the current attributes has been fetched (bounded by BI timeout)
+    if (state.pending) {
+      el.nextBtn.innerHTML = `<span class="spin"></span><span>${t("checking")}</span>`;
+      el.nextBtn.disabled = true;
+      try { await state.pending; } catch (_) {}
+      el.nextBtn.innerHTML = `<span>${t("next")}</span>`;
+      el.nextBtn.disabled = false;
+    }
+
+    // 3. price check
+    const b = state.status === "ready" ? state.band : null;
+    const tier = b ? tierOf(parsePrice(), b) : null;
+    const status = $("pbStatus");
+    if (tier === "hard") {
+      log("evt", "event submit_blocked reason=price_more_than_15pct_below_min");
+      el.pb.scrollIntoView({ behavior: "smooth", block: "center" });
+      flash(status, "flash-red");
+      return;
+    }
+    if (tier === "soft" && !state.confirmed) {
+      log("evt", "event submit_blocked reason=price_below_min_unconfirmed");
+      $("confirmNote").hidden = false;
+      el.pb.scrollIntoView({ behavior: "smooth", block: "center" });
+      flash(status, "flash");
+      return;
+    }
+    log("evt", `event paa_details_submitted price_check=${tier || "none"}${state.mode === "edit" ? " path=edit" : ""}`);
+    openModal(tier, b);
+  });
+  function flash(node, cls) { if (!node) return; node.classList.remove(cls); void node.offsetWidth; node.classList.add(cls); }
+
+  function openModal(tier, b) {
+    const listing = `${o(el.subcategory.value)} · ${o(el.purpose.value)} · ${T[lang].locShort[el.location.value]} · ${o(el.completion.value)}`;
+    const outcome = { ok: t("oOk"), high: t("oHigh"), soft: t("oSoft") }[tier] || t("oNone");
+    $("modalDl").innerHTML = `
+      <dt>${t("mListing")}</dt><dd>${listing}</dd>
+      <dt>${t("mPrice")}</dt><dd>${fmt(parsePrice())} ${el.purpose.value === "rent" ? t("egpMonth") : t("egp")}</dd>
+      <dt>${t("mBand")}</dt><dd>${b ? `${fmt(b.min)} – ${fmt(b.max)} (${t("pbAvg")} ${fmt(b.avg)})` : t("none")}</dd>
+      <dt>${t("mOutcome")}</dt><dd>${outcome}</dd>`;
+    $("modal").classList.add("open");
+  }
+  $("modalBack").addEventListener("click", () => $("modal").classList.remove("open"));
+  $("modalNew").addEventListener("click", () => { $("modal").classList.remove("open"); fill("reset"); });
+
+  // ---------------------------------------------------------------------------
+  // Language toggle
+  // ---------------------------------------------------------------------------
+  function applyLang() {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.querySelectorAll("[data-i18n]").forEach((n) => { const v = T[lang][n.dataset.i18n]; if (typeof v === "string") n.textContent = v; });
+    document.querySelectorAll("[data-i18n-ph]").forEach((n) => (n.placeholder = T[lang][n.dataset.i18nPh]));
+    $("pageTitle").textContent = state.mode === "edit" ? t("editProperty") : t("addProperty");
+    $("langLabel").textContent = lang.toUpperCase();
+    el.priceError.textContent = t("errPrice");
+    renderOptions(); updatePriceLabel(); el.area.dispatchEvent(new Event("input"));
+    renderBand();
+  }
+  $("langBtn").addEventListener("click", () => { lang = lang === "en" ? "ar" : "en"; state.lastTier = state.lastTier; applyLang(); log("muted", `language → ${lang.toUpperCase()}`); });
+
+  // ---------------------------------------------------------------------------
+  // Prototype controls
+  // ---------------------------------------------------------------------------
+  const proto = $("proto");
+  $("protoToggle").addEventListener("click", () => proto.classList.toggle("open"));
+  $("protoClose").addEventListener("click", () => proto.classList.remove("open"));
+  document.querySelectorAll('input[name="biMode"]').forEach((r) => r.addEventListener("change", () => {
+    bi.mode = r.value;
+    log("muted", `BI mode → ${r.value} (applies to the next request; cached combos are served from cache until expired)`);
+  }));
+  $("latency").addEventListener("input", (e) => { bi.latency = +e.target.value; $("latencyVal").textContent = `${bi.latency} ms`; });
+  $("biUpdate").addEventListener("click", () => {
+    bi.version++; $("biVer").textContent = `v${bi.version}`;
+    log("muted", `BI published ranges v${bi.version}. Legion keeps serving cached values until TTL expiry (no release needed).`);
+  });
+  $("cacheExpire").addEventListener("click", () => {
+    cache.clear(); log("muted", "cache expired");
+    const k = state.key; state.key = null; if (k) onAttributesChanged(); else renderReq();
+  });
+  document.querySelectorAll("[data-preset]").forEach((btn) => btn.addEventListener("click", () => {
+    const b = state.band; if (!b) return;
+    const v = { within: (b.min + b.avg) / 2, high: b.max * 1.1, soft: b.min * 0.93, hard: b.min * 0.7 }[btn.dataset.preset];
+    setPrice(nice(v));
+  }));
+  function setPrice(v) { el.price.value = fmt(v); onPriceChanged(); }
+  document.querySelectorAll("[data-fill]").forEach((btn) => btn.addEventListener("click", () => fill(btn.dataset.fill)));
+
+  function fill(kind) {
+    state.mode = kind === "edit" ? "edit" : "add";
+    $("pageTitle").textContent = state.mode === "edit" ? t("editProperty") : t("addProperty");
+    const f = document.getElementById("paa");
+    f.querySelectorAll(".has-error").forEach((n) => n.classList.remove("has-error"));
+    state.warnedAt = null; state.changedAfterWarning = false;
+    if (kind === "reset") {
+      f.reset(); renderOptions(); updatePriceLabel(); el.area.dispatchEvent(new Event("input"));
+      onAttributesChanged(); renderBand(); log("muted", "form reset");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    const d = kind === "edit"
+      ? { category: "residential", sub: "villa", purpose: "sale", location: "zayed", completion: "ready", ref: "CP-7Q2L9X", title: "Standalone villa with private garden in Sheikh Zayed", area: "420", price: null }
+      : { category: "residential", sub: "apartment", purpose: "sale", location: "newcairo", completion: "ready", ref: "CP-4K8M2A", title: "", area: "165", price: null };
+    el.category.value = d.category; fillSelect(el.subcategory, SUBS[d.category]); el.subcategory.disabled = false; el.subcategory.value = d.sub;
+    el.purpose.value = d.purpose; el.completion.disabled = false; el.completion.value = d.completion; el.location.value = d.location;
+    el.ref.value = d.ref; el.titleEn.value = d.title; el.area.value = d.area; el.area.dispatchEvent(new Event("input"));
+    updatePriceLabel();
+    el.price.value = "";
+    onAttributesChanged();
+    renderBand();
+    if (kind === "edit") {
+      log("muted", "opened existing ad CP-7Q2L9X (edit path) with its saved price");
+      // Saved price sits just below the band minimum, so the same warning fires on edit.
+      const apply = () => { if (state.band) setPrice(nice(state.band.min * 0.94)); else setPrice(13500000); };
+      state.pending ? state.pending.finally(apply) : apply();
+      el.priceField.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      log("muted", "filled sample listing — now enter a price");
+      el.priceField.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => el.price.focus({ preventScroll: true }), 350);
+    }
+  }
+
+  function log(cls, msg) {
+    const d = new Date(), ts = d.toTimeString().slice(0, 8);
+    const line = document.createElement("div");
+    line.innerHTML = `<span class="t">${ts}</span> <span class="${cls}"></span>`;
+    line.lastChild.textContent = msg;
+    el.log.prepend(line);
+  }
+
+  // init
+  renderOptions(); updatePriceLabel(); renderReq();
+  el.priceError.textContent = t("errPrice");
+  log("muted", "prototype ready — use “Fill sample listing” or fill the form by hand");
+})();
+</script>
+</body>
+</html>
